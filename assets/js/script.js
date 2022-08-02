@@ -5,6 +5,12 @@ var storedSchedule=[];
 //store data to local storage
 function storeevent(){
     //console.debug("try");
+
+    //check with confirm button
+    if (confirm("Please confirm to save") === false){
+        return;
+    }
+
     var tempslot =this.id.substring(5);
     console.debug(this.id);
     console.debug(tempslot);
@@ -49,6 +55,10 @@ function storeevent(){
 
 //delete event
 function deleteevent(){
+
+    if (confirm("Please confirm to delete") === false){
+        return;
+    }
     console.debug("deleted")
     var tempslot =this.id.substring(7);
     console.debug(this.id);
