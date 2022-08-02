@@ -37,6 +37,11 @@ function storeevent(){
     //check if there is another event in that timeslot
     storedSchedule = JSON.parse(localStorage.getItem("StoredSchedule"));
     console.debug(storedSchedule);  
+
+    if(!Array.isArray(storedSchedule)) {
+        storedSchedule = [];  
+    } 
+    
     for (i=0; i<storedSchedule.length; i++) {
         if (storedSchedule[i].timeslot === tempslot)
         {
@@ -79,7 +84,7 @@ function deleteevent(){
     //get the storedSchedule detail from local storage
     storedSchedule = JSON.parse(localStorage.getItem("StoredSchedule"));
     console.debug(storedSchedule);  
-    
+ 
     if(!Array.isArray(storedSchedule)) {
         storedSchedule = [];  
         return;
