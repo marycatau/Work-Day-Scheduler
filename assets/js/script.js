@@ -8,15 +8,26 @@ function storeevent(){
 
     //check with confirm button
     if (confirm("Please confirm to save") === false){
+
         return;
     }
 
+ 
     var tempslot =this.id.substring(5);
     console.debug(this.id);
     console.debug(tempslot);
     console.debug('#text_'+ tempslot);
     var eventdetail = $('#text_'+ tempslot).val();
     console.debug(eventdetail);
+    
+    //check if it is null string
+    if(eventdetail=== ""){
+        alert('Please enter the event details');
+        $("#ApptSave").hide();
+        $("#ApptDeleted").hide();
+        return;
+    }
+
     tempSchedule = {
         timeslot: tempslot,
         event : eventdetail
