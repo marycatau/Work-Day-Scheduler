@@ -21,6 +21,7 @@ textarea{
   border-bottom: 10px solid black;
 }
 
+/*
 .description{
   white-space: pre-wrap;
 }
@@ -42,22 +43,22 @@ textarea{
   color: #000000;
   border-top: 1px dashed #000000;
 }
-
+*/
 .past {
   background-color: #d3d3d3;
-  color: white;
+  color: black;
 }
 
 .present {
   background-color: #ff6961;
-  color: white;
+  color: black;
 }
 
 .future {
   background-color: #77dd77;
-  color: white;
+  color: black;
 }
-
+/*
 .saveBtn {
   border-left: 1px solid black;
   border-top-right-radius: 15px;
@@ -69,4 +70,22 @@ textarea{
 .saveBtn i:hover {
   font-size: 20px;
   transition: all .3s ease-in-out;
+}
+*/
+
+#ApptSave {
+  display: none;
+  font: 16px;
+  font-weight: bold;
+  color:orangered;
+  text-align: center;
+
+}
+
+#ApptDeleted {
+  display: none;
+  font: 16px;
+  font-weight: bold;
+  color:orangered;
+  text-align: center;
 }

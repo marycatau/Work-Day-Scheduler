@@ -2,20 +2,36 @@ var today = moment();
 var storedSchedule=[];
 
 
-//store data
+//store data to local storage
 function storeevent(){
-    console.debug("try");
+    //console.debug("try");
     var tempslot =this.id.substring(5);
     console.debug(this.id);
     console.debug(tempslot);
     console.debug('#text_'+ tempslot);
     var eventdetail = $('#text_'+ tempslot).val();
     console.debug(eventdetail);
-   // $(this).
     tempSchedule = {
-        timeslot:'text_'+tempslot,
+        timeslot: tempslot,
         event : eventdetail
     }
+
+
+    //check if there is another event in that timeslot
+    storedSchedule = JSON.parse(localStorage.getItem("StoredSchedule"));
+    console.debug(storedSchedule);  
+    for (i=0; i<storedSchedule.length; i++) {
+        if (storedSchedule[i].timeslot === tempslot)
+        {
+            storedSchedule[i].event= eventdetail;
+            localStorage.setItem("StoredSchedule", JSON.stringify(storedSchedule));
+            showevent();
+            $("#ApptSave").show();
+            $("#ApptDeleted").hide();
+            return;
+        }
+    }
+    
 
     console.debug(tempSchedule);
     storedSchedule.push(tempSchedule);
@@ -23,64 +39,102 @@ function storeevent(){
     console.debug(storedSchedule);
 
     localStorage.setItem("StoredSchedule", JSON.stringify(storedSchedule));
+    showevent();
+    $("#ApptSave").show();
+    $("#ApptDeleted").hide();
 
 
 }
 
 
+//delete event
+function deleteevent(){
+    console.debug("deleted")
+    var tempslot =this.id.substring(7);
+    console.debug(this.id);
+    console.debug(tempslot);
+
+
+    //get the storedSchedule detail from local storage
+    storedSchedule = JSON.parse(localStorage.getItem("StoredSchedule"));
+    console.debug(storedSchedule);  
+    
+    if(!Array.isArray(storedSchedule)) {
+        storedSchedule = [];  
+        return;
+    } 
+    
+    // deleted the event from the storedschedule array and store it in local storage and textarea
+    for (i=0; i<storedSchedule.length; i++){
+        if(storedSchedule[i].timeslot === tempslot){
+            var tSTemp = storedSchedule[i].timeslot;
+            console.debug(storedSchedule[i].event);
+            console.debug(tSTemp); 
+            storedSchedule.splice(i,1);
+            console.debug(storedSchedule);
+            localStorage.setItem("StoredSchedule", JSON.stringify(storedSchedule));
+            $("#text_"+tSTemp).val("");
+            $("#ApptDeleted").show();
+            $("#ApptSave").hide();
+            break;
+        }
+           
+    
+    }
+
+    
+
+
+}
+
+
+function showevent(){
+        //get stored schedule details and display on the schedule
+        storedSchedule = JSON.parse(localStorage.getItem("StoredSchedule"));
+        console.debug(storedSchedule);  
+    
+        if(!Array.isArray(storedSchedule)) storedSchedule = [];
+    
+        console.debug(storedSchedule);     
+    
+        for (i=0; i<storedSchedule.length; i++){
+            var tSTemp = storedSchedule[i].timeslot;
+            console.debug(storedSchedule[i].event);
+            console.debug(tSTemp);
+    
+            var temp = $('#text_'+tSTemp);
+            temp.val(storedSchedule[i].event);
+    
+        }
+
+        //check the current time and change the background color of the schedule
+        var now = moment();
+        var todayString = now.format('YYYY-MM-DD');
+        $('[id^=timeslot_]').each(function(index){
+            var timeslotTime = moment(todayString + ' ' + this.id.substring(9), 'YYYY-MM-DD hhmm');
+            var text = 'present';
+            var timediff = timeslotTime.diff(now, 'minutes');
+            if(timediff < -60){
+                text = 'past';
+            }else if(timediff > 0){
+                text = 'future';
+            }
+
+            $(this).attr('class',text);
+            console.log(timeslotTime.format('YYYY-MM-DD hh:mm') + ' is ' + text);
+        });
+    
+
+}
 
 //set today time and compare the current to classify the past, current and future time slot
 function init(){
     
     //show today date
     $("#currentDay").text(today.format("MMM Do, YYYY"));
+    showevent();
 
 
-    //get stored schedule details and display on the schedule
-    storedSchedule = JSON.parse(localStorage.getItem("StoredSchedule"));
-    console.debug(storedSchedule);  
-
-    if(!Array.isArray(storedSchedule)) storedSchedule = [];
-
-
-    /*storedSchedule[0]={
-        timeslot:"text_1000",
-        event:"wakeup"
-    }
-    console.debug(storedSchedule); 
-    */
-   /* var temp = document.querySelector("#text_0900");
-    temp.textContent="try0";
-
-    $("#text_1000").text = "AAA";*/
-    
-
-    for (i=0; i<storedSchedule.length; i++){
-        var tSTemp = storedSchedule[i].timeslot;
-        console.debug(storedSchedule[i].event);
-        console.debug(tSTemp);
-
-        var temp = $('#'+tSTemp);
-        temp.val(storedSchedule[i].event);
-
-    }
-
-    //check the current time and change the background color of the schedule
-    var now = moment();
-    var todayString = now.format('YYYY-MM-DD');
-    $('[id^=timeslot_]').each(function(index){
-        var timeslotTime = moment(todayString + ' ' + this.id.substring(5), 'YYYY-MM-DD hhmm');
-        var text = 'present';
-        var timediff = timeslotTime.diff(now, 'minutes');
-        if(timediff < -60){
-            text = 'past';
-        }else if(timediff > 0){
-            text = 'future';
-        }
-
-        $(this).attr('class',text);
-        console.log(timeslotTime.format('YYYY-MM-DD hh:mm') + ' is ' + text);
-    });
 
 
    /* console.debug(ThisScore);    
@@ -94,3 +148,5 @@ function init(){
 
 init();
 $('[id^=save_]').click(storeevent);
+
+$('[id^=delete_]').click(deleteevent);
